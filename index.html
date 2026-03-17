@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tactik Foot</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Nunito',sans-serif;background:#f5f5f5;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:1rem;}
+    #gr{background:#fff;border-radius:16px;padding:1.4rem 1rem;max-width:600px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+    .lang-screen{text-align:center;padding:2.5rem 1rem;}
+    .lang-title{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:3px;color:#111;margin-bottom:.4rem;}
+    .lang-sub{font-size:15px;color:#777;margin-bottom:2rem;}
+    .lang-btn-grid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:2rem;}
+    .lang-btn{background:#fff;border:2px solid #ddd;border-radius:12px;padding:16px 32px;font-size:1.1rem;font-weight:700;color:#111;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .15s,transform .15s;font-family:'Nunito',sans-serif;}
+    .lang-btn:hover{border-color:#1D9E75;transform:scale(1.05);}
+    .lang-flag{font-size:1.8rem;}
+    .gtitle{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;letter-spacing:2px;color:#111;text-align:center;margin-bottom:.2rem;}
+    .gsub{text-align:center;font-size:16px;color:#555;margin-bottom:.6rem;}
+    .lang-change{text-align:center;margin-bottom:.8rem;position:relative;display:inline-block;left:50%;transform:translateX(-50%);}
+    .lang-trigger{background:#fff;border:1px solid #ddd;border-radius:8px;padding:5px 14px;font-size:13px;color:#888;cursor:pointer;font-family:'Nunito',sans-serif;transition:border-color .15s,color .15s;display:flex;align-items:center;gap:6px;}
+    .lang-trigger:hover{border-color:#1D9E75;color:#1D9E75;}
+    .lang-trigger .arrow{font-size:10px;transition:transform .2s;}
+    .lang-trigger.open .arrow{transform:rotate(180deg);}
+    .lang-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.1);overflow:hidden;z-index:100;min-width:160px;}
+    .lang-dropdown.show{display:block;}
+    .lang-option{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:14px;font-weight:600;color:#111;cursor:pointer;transition:background .12s;white-space:nowrap;font-family:'Nunito',sans-serif;border:none;background:none;width:100%;text-align:left;}
+    .lang-option:hover{background:#f0fdf8;color:#1D9E75;}
+    .lang-option.active{color:#1D9E75;background:#f0fdf8;}
+    .lang-option .opt-flag{font-size:1.2rem;}
+    .sbar{display:flex;justify-content:center;gap:1.5rem;margin-bottom:.8rem;}
+    .spill{background:#f0f0f0;border:1px solid #ddd;border-radius:12px;padding:.4rem 1.2rem;font-size:17px;font-weight:700;color:#111;}
+    .spill span{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;margin-left:6px;color:#1D9E75;}
+    .pdots{display:flex;gap:8px;justify-content:center;margin-bottom:.8rem;}
+    .dot{width:13px;height:13px;border-radius:50%;background:#ccc;}
+    .dot.done{background:#1D9E75;}.dot.cur{background:#5DCAA5;}
+    .lvllbl{text-align:center;font-size:14px;color:#666;margin-bottom:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+    .ibox{background:#f7f7f7;border:1px solid #e0e0e0;border-radius:8px;padding:.8rem 1rem;margin-bottom:1rem;text-align:center;font-size:17px;color:#111;font-weight:700;}
+    .ibox em{color:#777;font-style:normal;font-weight:400;font-size:14px;display:block;margin-top:4px;}
+    .fwrap{position:relative;max-width:520px;margin:0 auto 1rem;}
+    .fsvg{width:100%;height:auto;display:block;border-radius:12px;}
+    .zov{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:12px;overflow:hidden;}
+    .zone{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:10px;border-right:1px dashed rgba(255,255,255,0.2);transition:background .15s;cursor:pointer;position:absolute;top:0;bottom:0;gap:5px;}
+    .zone:last-child{border-right:none;}
+    .zone.dov{background:rgba(29,158,117,0.3);}
+    .zone.ok{animation:fok .5s ease;}
+    .zone.bad{animation:fbad .5s ease;}
+    @keyframes fok{0%{background:rgba(29,158,117,0.55)}100%{background:transparent}}
+    @keyframes fbad{0%{background:rgba(226,75,74,0.55)}100%{background:transparent}}
+    .zlbl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:rgba(255,255,255,0.9);text-shadow:0 1px 4px rgba(0,0,0,.8);pointer-events:none;text-align:center;line-height:1.2;}
+    .ptag{background:rgba(0,0,0,0.78);color:#fff;font-size:12px;font-weight:700;border-radius:4px;padding:3px 8px;pointer-events:none;white-space:nowrap;border:1px solid rgba(255,255,255,.35);max-width:92%;overflow:hidden;text-overflow:ellipsis;}
+    .parea{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:1rem;min-height:70px;}
+    .pcard{background:#fff;border:2px solid #ccc;border-radius:10px;padding:10px 16px;font-weight:700;color:#111;cursor:grab;user-select:none;display:flex;align-items:center;gap:10px;transition:transform .15s,opacity .2s;touch-action:none;}
+    .pcard:hover{transform:scale(1.05);border-color:#1D9E75;}
+    .pcard.dragging{opacity:.35;cursor:grabbing;}
+    .pcard.placed{display:none;}
+    .pico{font-size:24px;line-height:1;}
+    .pname{font-size:15px;font-weight:700;color:#111;}
+    .phint{font-size:13px;color:#666;font-weight:400;}
+    .fbk{text-align:center;font-size:17px;font-weight:700;min-height:24px;margin-bottom:.6rem;color:#111;}
+    .fbk.good{color:#0F6E56;}.fbk.bad{color:#A32D2D;}
+    .bnext{display:block;margin:0 auto;background:#1D9E75;color:#fff;border:none;border-radius:8px;padding:.65rem 2rem;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px;cursor:pointer;transition:background .15s,transform .1s;}
+    .bnext:hover{background:#0F6E56;transform:scale(1.03);}
+    .bnext:disabled{background:#e0e0e0;color:#aaa;cursor:default;transform:none;}
+    .winsc{text-align:center;padding:2rem 1rem;}
+    .wtitle{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:3px;color:#1D9E75;margin-bottom:.4rem;}
+    .wscore{font-family:'Bebas Neue',sans-serif;font-size:4rem;color:#111;margin-bottom:.3rem;}
+    .btn-ghost{background:none;border:1px solid #ddd;border-radius:8px;padding:6px 16px;font-size:14px;color:#888;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;transition:border-color .15s,color .15s;}
+    .btn-ghost:hover{border-color:#1D9E75;color:#1D9E75;}
+  </style>
+</head>
+<body>
+<div id="gr"></div>
+<script>
+const TRANSLATIONS={
+  fr:{
+    langName:"Français",flag:"🇫🇷",
+    title:"⚽ Tactik Foot",subtitle:"Apprends le glisser-déposer en plaçant les joueurs sur le terrain !",
+    chooseLang:"Choisir la langue",score:"Score",level:"Niveau",changeLang:"🌐 Changer de langue",
+    nextLevel:"Niveau suivant ↗",seeScore:"🏆 Voir mon score",champion:"Champion !",
+    allDone:"Tous les niveaux terminés !",finalScore:"Score final",playAgain:"Rejouer ↗",
+    goodMsg:"✅ Bravo ! Bonne zone !",badMsg:"❌ Pas la bonne zone, réessaie !",
+    fullMsg:"❌ Cette zone est complète !",winMsg:"🎉 Niveau réussi ! Tous les joueurs placés !",
+    levels:[
+      {title:"Niveau 1 — La Formation",inst:"Place chaque joueur dans sa zone !",hint:"Glisse et dépose chaque carte",
+       zones:[{id:"def",lbl:"DÉFENSE",x:0,w:33.3,max:2},{id:"mil",lbl:"MILIEU",x:33.3,w:33.3,max:1},{id:"att",lbl:"ATTAQUE",x:66.6,w:33.4,max:1}],
+       players:[{id:"p1",ico:"🧤",name:"Gardien",hint:"Zone défensive",zone:"def"},{id:"p2",ico:"🛡️",name:"Défenseur",hint:"Zone défensive",zone:"def"},{id:"p3",ico:"⚡",name:"Milieu",hint:"Zone centrale",zone:"mil"},{id:"p4",ico:"🔥",name:"Attaquant",hint:"Zone offensive",zone:"att"}]},
+      {title:"Niveau 2 — Les Règles",inst:"Range chaque action dans la bonne colonne !",hint:"Faute ou légal ?",
+       zones:[{id:"fau",lbl:"FAUTE",x:0,w:50,max:2},{id:"leg",lbl:"LÉGAL",x:50,w:50,max:2}],
+       players:[{id:"r1",ico:"👊",name:"Coup de poing",hint:"Contact violent",zone:"fau"},{id:"r2",ico:"🦵",name:"Tacle glissé",hint:"Dans le ballon",zone:"leg"},{id:"r3",ico:"✋",name:"Main volontaire",hint:"Touche la main",zone:"fau"},{id:"r4",ico:"🏃",name:"Sprint dribble",hint:"Course avec ballon",zone:"leg"}]},
+      {title:"Niveau 3 — Les Coups de pied",inst:"Associe chaque situation à son coup de pied !",hint:"Corner, coup franc ou penalty ?",
+       zones:[{id:"cor",lbl:"CORNER",x:0,w:33.3,max:2},{id:"frl",lbl:"C.FRANC",x:33.3,w:33.3,max:1},{id:"pen",lbl:"PENALTY",x:66.6,w:33.4,max:1}],
+       players:[{id:"k1",ico:"🚩",name:"Ballon sorti",hint:"Sur la ligne de but",zone:"cor"},{id:"k2",ico:"👐",name:"Faute surface",hint:"Zone des 16m",zone:"pen"},{id:"k3",ico:"⚽",name:"Faute hors surf.",hint:"Hors des 16m",zone:"frl"},{id:"k4",ico:"🔄",name:"Renvoi défenseur",hint:"Derrière la ligne",zone:"cor"}]},
+      {title:"Niveau 4 — Les Positions",inst:"4 zones, 4 positions — à toi de jouer !",hint:"Glisse chaque joueur à son poste",
+       zones:[{id:"gk",lbl:"GARDIEN",x:0,w:25,max:1},{id:"df",lbl:"DÉFENSE",x:25,w:25,max:1},{id:"mf",lbl:"MILIEU",x:50,w:25,max:1},{id:"fw",lbl:"ATTAQUE",x:75,w:25,max:1}],
+       players:[{id:"q1",ico:"🧤",name:"Gardien de but",hint:"Seul avec les mains",zone:"gk"},{id:"q2",ico:"🛡️",name:"Arrière central",hint:"Dernier rempart",zone:"df"},{id:"q3",ico:"🎯",name:"Meneur de jeu",hint:"Organise le jeu",zone:"mf"},{id:"q4",ico:"⚡",name:"Avant-centre",hint:"Marque les buts",zone:"fw"}]}
+    ]
+  },
+  en:{
+    langName:"English",flag:"🇬🇧",
+    title:"⚽ Tactik Foot",subtitle:"Learn drag & drop by placing players on the pitch!",
+    chooseLang:"Choose language",score:"Score",level:"Level",changeLang:"🌐 Change language",
+    nextLevel:"Next level ↗",seeScore:"🏆 See my score",champion:"Champion!",
+    allDone:"All levels completed!",finalScore:"Final score",playAgain:"Play again ↗",
+    goodMsg:"✅ Great! Correct zone!",badMsg:"❌ Wrong zone, try again!",
+    fullMsg:"❌ This zone is full!",winMsg:"🎉 Level complete! All players placed!",
+    levels:[
+      {title:"Level 1 — The Formation",inst:"Place each player in their zone!",hint:"Drag and drop each card",
+       zones:[{id:"def",lbl:"DEFENCE",x:0,w:33.3,max:2},{id:"mid",lbl:"MIDFIELD",x:33.3,w:33.3,max:1},{id:"att",lbl:"ATTACK",x:66.6,w:33.4,max:1}],
+       players:[{id:"p1",ico:"🧤",name:"Goalkeeper",hint:"Defensive zone",zone:"def"},{id:"p2",ico:"🛡️",name:"Defender",hint:"Defensive zone",zone:"def"},{id:"p3",ico:"⚡",name:"Midfielder",hint:"Central zone",zone:"mid"},{id:"p4",ico:"🔥",name:"Forward",hint:"Attacking zone",zone:"att"}]},
+      {title:"Level 2 — The Rules",inst:"Sort each action into the right column!",hint:"Foul or legal?",
+       zones:[{id:"fau",lbl:"FOUL",x:0,w:50,max:2},{id:"leg",lbl:"LEGAL",x:50,w:50,max:2}],
+       players:[{id:"r1",ico:"👊",name:"Punch",hint:"Violent contact",zone:"fau"},{id:"r2",ico:"🦵",name:"Sliding tackle",hint:"Ball first",zone:"leg"},{id:"r3",ico:"✋",name:"Handball",hint:"Deliberate touch",zone:"fau"},{id:"r4",ico:"🏃",name:"Sprint dribble",hint:"Running with ball",zone:"leg"}]},
+      {title:"Level 3 — Set Pieces",inst:"Match each situation to its set piece!",hint:"Corner, free kick or penalty?",
+       zones:[{id:"cor",lbl:"CORNER",x:0,w:33.3,max:2},{id:"frl",lbl:"FREE KICK",x:33.3,w:33.3,max:1},{id:"pen",lbl:"PENALTY",x:66.6,w:33.4,max:1}],
+       players:[{id:"k1",ico:"🚩",name:"Ball over line",hint:"On the goal line",zone:"cor"},{id:"k2",ico:"👐",name:"Foul in box",hint:"Inside the area",zone:"pen"},{id:"k3",ico:"⚽",name:"Foul outside box",hint:"Outside the area",zone:"frl"},{id:"k4",ico:"🔄",name:"Defender clears",hint:"Behind the line",zone:"cor"}]},
+      {title:"Level 4 — Positions",inst:"4 zones, 4 positions — your turn!",hint:"Drag each player to their position",
+       zones:[{id:"gk",lbl:"KEEPER",x:0,w:25,max:1},{id:"df",lbl:"DEFENCE",x:25,w:25,max:1},{id:"mf",lbl:"MIDFIELD",x:50,w:25,max:1},{id:"fw",lbl:"ATTACK",x:75,w:25,max:1}],
+       players:[{id:"q1",ico:"🧤",name:"Goalkeeper",hint:"Only one with hands",zone:"gk"},{id:"q2",ico:"🛡️",name:"Centre-back",hint:"Last line of defence",zone:"df"},{id:"q3",ico:"🎯",name:"Playmaker",hint:"Organises the game",zone:"mf"},{id:"q4",ico:"⚡",name:"Striker",hint:"Scores the goals",zone:"fw"}]}
+    ]
+  },
+  es:{
+    langName:"Español",flag:"🇪🇸",
+    title:"⚽ Tactik Foot",subtitle:"¡Aprende arrastrar y soltar colocando jugadores en el campo!",
+    chooseLang:"Elegir idioma",score:"Puntos",level:"Nivel",changeLang:"🌐 Cambiar idioma",
+    nextLevel:"Siguiente nivel ↗",seeScore:"🏆 Ver mi puntuación",champion:"¡Campeón!",
+    allDone:"¡Todos los niveles completados!",finalScore:"Puntuación final",playAgain:"Jugar de nuevo ↗",
+    goodMsg:"✅ ¡Bravo! ¡Zona correcta!",badMsg:"❌ ¡Zona incorrecta, inténtalo!",
+    fullMsg:"❌ ¡Esta zona está llena!",winMsg:"🎉 ¡Nivel superado! ¡Todos colocados!",
+    levels:[
+      {title:"Nivel 1 — La Formación",inst:"¡Coloca cada jugador en su zona!",hint:"Arrastra y suelta cada carta",
+       zones:[{id:"def",lbl:"DEFENSA",x:0,w:33.3,max:2},{id:"mil",lbl:"MEDIO",x:33.3,w:33.3,max:1},{id:"att",lbl:"ATAQUE",x:66.6,w:33.4,max:1}],
+       players:[{id:"p1",ico:"🧤",name:"Portero",hint:"Zona defensiva",zone:"def"},{id:"p2",ico:"🛡️",name:"Defensa",hint:"Zona defensiva",zone:"def"},{id:"p3",ico:"⚡",name:"Centrocampista",hint:"Zona central",zone:"mil"},{id:"p4",ico:"🔥",name:"Delantero",hint:"Zona ofensiva",zone:"att"}]},
+      {title:"Nivel 2 — Las Reglas",inst:"¡Clasifica cada acción en la columna correcta!",hint:"¿Falta o legal?",
+       zones:[{id:"fau",lbl:"FALTA",x:0,w:50,max:2},{id:"leg",lbl:"LEGAL",x:50,w:50,max:2}],
+       players:[{id:"r1",ico:"👊",name:"Puñetazo",hint:"Contacto violento",zone:"fau"},{id:"r2",ico:"🦵",name:"Entrada",hint:"Al balón",zone:"leg"},{id:"r3",ico:"✋",name:"Mano voluntaria",hint:"Toca con la mano",zone:"fau"},{id:"r4",ico:"🏃",name:"Regate corriendo",hint:"Correr con balón",zone:"leg"}]},
+      {title:"Nivel 3 — Saques",inst:"¡Asocia cada situación a su saque!",hint:"¿Córner, falta o penalti?",
+       zones:[{id:"cor",lbl:"CÓRNER",x:0,w:33.3,max:2},{id:"frl",lbl:"FALTA",x:33.3,w:33.3,max:1},{id:"pen",lbl:"PENALTI",x:66.6,w:33.4,max:1}],
+       players:[{id:"k1",ico:"🚩",name:"Balón fuera",hint:"En la línea de gol",zone:"cor"},{id:"k2",ico:"👐",name:"Falta en el área",hint:"Dentro del área",zone:"pen"},{id:"k3",ico:"⚽",name:"Falta fuera área",hint:"Fuera del área",zone:"frl"},{id:"k4",ico:"🔄",name:"Despeje defensa",hint:"Tras la línea",zone:"cor"}]},
+      {title:"Nivel 4 — Las Posiciones",inst:"¡4 zonas, 4 posiciones — tu turno!",hint:"Arrastra cada jugador a su posición",
+       zones:[{id:"gk",lbl:"PORTERO",x:0,w:25,max:1},{id:"df",lbl:"DEFENSA",x:25,w:25,max:1},{id:"mf",lbl:"MEDIO",x:50,w:25,max:1},{id:"fw",lbl:"ATAQUE",x:75,w:25,max:1}],
+       players:[{id:"q1",ico:"🧤",name:"Portero",hint:"Solo con las manos",zone:"gk"},{id:"q2",ico:"🛡️",name:"Central",hint:"Último recurso",zone:"df"},{id:"q3",ico:"🎯",name:"Organizador",hint:"Organiza el juego",zone:"mf"},{id:"q4",ico:"⚡",name:"Delantero",hint:"Marca los goles",zone:"fw"}]}
+    ]
+  }
+};
+
+let lang=null,lvl=0,score=0,placedCount=0,dragId=null,touchCard=null,touchClone=null;
+const placedInZone={};
+function T(){return TRANSLATIONS[lang];}
+
+function toggleDD(){
+  const trig=document.getElementById('ltrig');
+  const dd=document.getElementById('ldd');
+  if(!trig||!dd)return;
+  trig.classList.toggle('open');
+  dd.classList.toggle('show');
+}
+function switchLang(l){
+  lang=l;lvl=0;score=0;
+  Object.keys(placedInZone).forEach(k=>delete placedInZone[k]);
+  const dd=document.getElementById('ldd');
+  const trig=document.getElementById('ltrig');
+  if(dd)dd.classList.remove('show');
+  if(trig)trig.classList.remove('open');
+  renderGame();
+}
+document.addEventListener('click',function(e){
+  const wrap=document.getElementById('lcw');
+  if(wrap&&!wrap.contains(e.target)){
+    const dd=document.getElementById('ldd');
+    const trig=document.getElementById('ltrig');
+    if(dd)dd.classList.remove('show');
+    if(trig)trig.classList.remove('open');
+  }
+});
+function showLangScreen(){
+  document.getElementById('gr').innerHTML=`
+    <div class="lang-screen">
+      <div class="lang-title">⚽ TACTIK FOOT</div>
+      <div class="lang-sub">Choisir la langue / Choose language / Elegir idioma</div>
+      <div class="lang-btn-grid">
+        ${Object.entries(TRANSLATIONS).map(([k,v])=>`
+          <button class="lang-btn" onclick="selectLang('${k}')">
+            <span class="lang-flag">${v.flag}</span><span>${v.langName}</span>
+          </button>`).join('')}
+      </div>
+    </div>`;}
+
+function selectLang(l){
+  lang=l;lvl=0;score=0;
+  Object.keys(placedInZone).forEach(k=>delete placedInZone[k]);
+  renderGame();}
+
+function renderGame(){
+  const t=T();
+  document.getElementById('gr').innerHTML=`
+    <div class="gtitle">${t.title}</div>
+    <div class="gsub">${t.subtitle}</div>
+    <div class="lang-change" id="lcw">
+      <button class="lang-trigger" id="ltrig" onclick="toggleDD()">
+        <span>${TRANSLATIONS[lang].flag}</span><span>${TRANSLATIONS[lang].langName}</span><span class="arrow">&#9660;</span>
+      </button>
+      <div class="lang-dropdown" id="ldd">
+        ${Object.entries(TRANSLATIONS).map(([k,v])=>`<button class="lang-option${k===lang?' active':''}" onclick="switchLang('${k}')"><span class="opt-flag">${v.flag}</span><span>${v.langName}</span></button>`).join('')}
+      </div>
+    </div>
+    <div class="sbar">
+      <div class="spill">${t.score} <span id="sc">0</span></div>
+      <div class="spill">${t.level} <span id="ld">1</span></div>
+    </div>
+    <div class="pdots" id="pdots"></div>
+    <div class="lvllbl" id="ll"></div>
+    <div class="ibox" id="ib"></div>
+    <div class="fwrap" id="fw">
+      <svg class="fsvg" viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="520" height="300" rx="12" fill="#3B6D11"/>
+        <rect x="10" y="10" width="500" height="280" rx="8" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <line x1="260" y1="10" x2="260" y2="290" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <circle cx="260" cy="150" r="46" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <circle cx="260" cy="150" r="4" fill="rgba(255,255,255,0.5)"/>
+        <rect x="10" y="95" width="70" height="110" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <rect x="440" y="95" width="70" height="110" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <line x1="174" y1="10" x2="174" y2="290" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="347" y1="10" x2="347" y2="290" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
+      </svg>
+      <div class="zov" id="zo"></div>
+    </div>
+    <div class="parea" id="pa"></div>
+    <div class="fbk" id="fb"></div>
+    <button class="bnext" id="bn" disabled onclick="nextLvl()">${t.nextLevel}</button>`;
+  renderLvl();}
+
+function renderDots(){
+  const levels=T().levels;
+  document.getElementById('pdots').innerHTML=levels.map((_,i)=>
+    `<div class="dot ${i<lvl?'done':i===lvl?'cur':''}"></div>`).join('');}
+
+function renderLvl(){
+  const t=T(),L=t.levels[lvl];
+  placedCount=0;
+  Object.keys(placedInZone).forEach(k=>delete placedInZone[k]);
+  L.zones.forEach(z=>{placedInZone[z.id]=[];});
+  document.getElementById('ll').textContent=L.title;
+  document.getElementById('ld').textContent=lvl+1;
+  document.getElementById('ib').innerHTML=L.inst+`<em>${L.hint}</em>`;
+  document.getElementById('fb').textContent='';
+  document.getElementById('fb').className='fbk';
+  document.getElementById('bn').disabled=true;
+  document.getElementById('bn').textContent=t.nextLevel;
+  renderDots();renderZones(L);renderPlayers(L);}
+
+function renderZones(L){
+  const zo=document.getElementById('zo');
+  zo.innerHTML='';
+  L.zones.forEach(z=>{
+    const d=document.createElement('div');
+    d.className='zone';d.dataset.zid=z.id;
+    d.style.cssText=`left:${z.x}%;width:${z.w}%;`;
+    d.innerHTML=`<div class="zlbl">${z.lbl}</div>`;
+    d.addEventListener('dragover',e=>{e.preventDefault();d.classList.add('dov');});
+    d.addEventListener('dragleave',()=>d.classList.remove('dov'));
+    d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('dov');doPlace(z.id,d,z);});
+    zo.appendChild(d);});}
+
+function renderPlayers(L){
+  const pa=document.getElementById('pa');
+  pa.innerHTML='';
+  [...L.players].sort(()=>Math.random()-.5).forEach(p=>{
+    const c=document.createElement('div');
+    c.className='pcard';c.id='c-'+p.id;c.draggable=true;c.dataset.pid=p.id;
+    c.innerHTML=`<span class="pico">${p.ico}</span><div><div class="pname">${p.name}</div><div class="phint">${p.hint}</div></div>`;
+    c.addEventListener('dragstart',()=>{dragId=p.id;c.classList.add('dragging');});
+    c.addEventListener('dragend',()=>c.classList.remove('dragging'));
+    c.addEventListener('touchstart',e=>tStart(e,p.id,c),{passive:false});
+    c.addEventListener('touchmove',tMove,{passive:false});
+    c.addEventListener('touchend',tEnd,{passive:false});
+    pa.appendChild(c);});}
+
+function doPlace(zid,zEl,zoneDef){
+  if(!dragId)return;
+  const pid=dragId;dragId=null;
+  const card=document.getElementById('c-'+pid);
+  if(!card||card.classList.contains('placed'))return;
+  const t=T(),L=t.levels[lvl];
+  const player=L.players.find(p=>p.id===pid);
+  if(!player)return;
+  const alreadyPlaced=L.zones.some(z=>placedInZone[z.id]&&placedInZone[z.id].includes(pid));
+  if(alreadyPlaced)return;
+  const correct=player.zone===zid;
+  const zoneArr=placedInZone[zid]||[];
+  const maxSlots=zoneDef?zoneDef.max:1;
+  if(correct){
+    if(zoneArr.length>=maxSlots){
+      showFb(t.fullMsg,'bad');
+      zEl.classList.add('bad');setTimeout(()=>zEl.classList.remove('bad'),500);return;}
+    placedInZone[zid].push(pid);
+    card.classList.add('placed');
+    zEl.classList.add('ok');setTimeout(()=>zEl.classList.remove('ok'),500);
+    score+=10;document.getElementById('sc').textContent=score;
+    placedCount++;addTag(player,zEl);showFb(t.goodMsg,'good');
+    if(placedCount===L.players.length){
+      setTimeout(()=>{
+        showFb(t.winMsg,'good');
+        const btn=document.getElementById('bn');
+        btn.disabled=false;
+        btn.textContent=lvl>=t.levels.length-1?t.seeScore:t.nextLevel;},400);}
+  }else{
+    zEl.classList.add('bad');setTimeout(()=>zEl.classList.remove('bad'),500);
+    score=Math.max(0,score-2);document.getElementById('sc').textContent=score;
+    showFb(t.badMsg,'bad');}}
+
+function addTag(player,zEl){
+  const tag=document.createElement('div');
+  tag.className='ptag';tag.textContent=player.ico+' '+player.name;
+  zEl.appendChild(tag);}
+
+function showFb(msg,cls){
+  const el=document.getElementById('fb');
+  el.textContent=msg;el.className='fbk '+cls;}
+
+function nextLvl(){
+  lvl++;
+  if(lvl>=T().levels.length){showWin();}else{renderLvl();}}
+
+function showWin(){
+  const t=T();
+  document.getElementById('gr').innerHTML=`
+    <div class="winsc">
+      <div style="font-size:3rem">🏆</div>
+      <div class="wtitle">${t.champion}</div>
+      <div style="font-size:17px;color:#666;margin-bottom:1.2rem;">${t.allDone}</div>
+      <div class="wscore">${score} pts</div>
+      <div style="font-size:16px;color:#666;margin-bottom:1.5rem;">${t.finalScore}</div>
+      <button class="bnext" onclick="selectLang('${lang}')">${t.playAgain}</button>
+    </div>`;}
+
+function tStart(e,pid,card){
+  e.preventDefault();dragId=pid;touchCard=card;
+  const t=e.touches[0];
+  touchClone=card.cloneNode(true);
+  touchClone.style.cssText=`position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.05);left:${t.clientX-60}px;top:${t.clientY-25}px;`;
+  document.body.appendChild(touchClone);card.classList.add('dragging');}
+
+function tMove(e){
+  e.preventDefault();if(!touchClone)return;
+  const t=e.touches[0];
+  touchClone.style.left=(t.clientX-60)+'px';touchClone.style.top=(t.clientY-25)+'px';
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('dov'));
+  const el=document.elementFromPoint(t.clientX,t.clientY);
+  if(el){const z=el.closest('.zone');if(z)z.classList.add('dov');}}
+
+function tEnd(e){
+  e.preventDefault();
+  if(touchClone){document.body.removeChild(touchClone);touchClone=null;}
+  if(touchCard)touchCard.classList.remove('dragging');
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('dov'));
+  if(!dragId){touchCard=null;return;}
+  const t=e.changedTouches[0];
+  const el=document.elementFromPoint(t.clientX,t.clientY);
+  if(el){
+    const z=el.closest('.zone');
+    if(z){
+      const L=T().levels[lvl];
+      const zdef=L.zones.find(zz=>zz.id===z.dataset.zid);
+      doPlace(z.dataset.zid,z,zdef);}}
+  dragId=null;touchCard=null;}
+
+function detectLang(){
+  const nav=navigator.language||navigator.userLanguage||'en';
+  const code=nav.toLowerCase().split('-')[0];
+  if(code==='fr')return 'fr';
+  if(code==='es')return 'es';
+  return 'en';
+}
+selectLang(detectLang());
+</script>
+</body>
+</html>
